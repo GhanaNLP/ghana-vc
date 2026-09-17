@@ -25,11 +25,16 @@ classifiers = [
 # versions installs a second, different torch build and the mismatched CUDA
 # runtime then breaks torchaudio with "libcudart.so.12: cannot open shared
 # object file". Let Seed-VC own the torch stack.
+#
+# numpy IS pinned, to match Seed-VC's own `numpy==1.26.4`. Without this we
+# install numpy 2.x first (along with datasets/pyarrow wheels built against
+# it), Seed-VC then downgrades numpy to 1.26.4, and those wheels fail with
+# "ModuleNotFoundError: No module named 'numpy.strings'".
 dependencies = [
     "datasets>=2.18",
-    "huggingface_hub>=0.23",
+    "huggingface_hub>=0.28.1",
     "soundfile>=0.12",
-    "numpy",
+    "numpy>=1.26,<2",
     "pyyaml",
 ]
 
