@@ -30,7 +30,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && python -m pip install --upgrade pip
 
 # 1. Seed-VC first, so its requirements own the torch stack uncontested.
-ARG SEEDVC_REF=main
+ARG SEEDVC_REF=51383efd921027683c89e5348211d93ff12ac2a8
 RUN git clone https://github.com/Plachtaa/seed-vc.git ${GHANA_VC_HOME}/seed-vc \
     && cd ${GHANA_VC_HOME}/seed-vc \
     && git checkout ${SEEDVC_REF} \

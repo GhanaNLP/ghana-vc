@@ -48,6 +48,16 @@ on first use and its requirements installed. Set `GHANA_VC_HOME` to change
 that location, or pass `--no-install-deps` if you manage the environment
 yourself.
 
+Seed-VC is pinned to a tested commit
+(`51383efd`), because its `requirements.txt` drives the whole dependency stack
+— torch 2.4.0, `numpy==1.26.4`, and an older `huggingface_hub` API that BigVGAN
+depends on. Tracking its main branch would let an upstream change break
+installs silently.
+
+One consequence worth knowing: `torch` is not present until the first
+`load()`, which is when Seed-VC's requirements get installed. `import torch`
+straight after `pip install ghana-vc` will fail; call `ensure_seedvc()` first.
+
 `torch`, `torchaudio` and `librosa` are intentionally **not** pinned by this
 package — Seed-VC's own `requirements.txt` owns them. Installing a second torch
 build alongside Seed-VC's leads to a CUDA runtime mismatch

@@ -3,7 +3,11 @@
 from __future__ import annotations
 
 SEEDVC_REPO = "https://github.com/Plachtaa/seed-vc.git"
-SEEDVC_COMMIT = ""  # pin a commit here if upstream drift becomes a problem
+# Pinned to the commit this project is tested against. Seed-VC's
+# requirements.txt drives the whole dependency stack (torch 2.4.0,
+# numpy==1.26.4, an older huggingface_hub API used by BigVGAN), so tracking
+# its main branch means an upstream change can silently break installs.
+SEEDVC_COMMIT = "51383efd921027683c89e5348211d93ff12ac2a8"
 
 DEFAULT_MODEL_REPO = "ghanaopenai/ghana-vc"
 
