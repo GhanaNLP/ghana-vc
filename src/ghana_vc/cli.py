@@ -30,7 +30,7 @@ def _steps(value: str) -> int:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="ghana-vc",
-        description="Convert Hugging Face audio datasets into the Twi Zephyr voice.",
+        description="Voice conversion for Ghanaian languages.",
     )
     sub = parser.add_subparsers(dest="command", required=True)
 
