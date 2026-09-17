@@ -8,9 +8,9 @@
 # class of failure, and saves ~4-5 minutes of pip per job.
 #
 # Build:
-#   docker build -t ghcr.io/ghananlp/ghana-vc:latest .
+#   docker build -t ghcr.io/ghanaopenai/ghana-vc:latest .
 # Run:
-#   docker run --gpus all -e HF_TOKEN=... ghcr.io/ghananlp/ghana-vc:latest \
+#   docker run --gpus all -e HF_TOKEN=... ghcr.io/ghanaopenai/ghana-vc:latest \
 #     ghana-vc convert --dataset org/ds --output org/out --num-samples 10
 
 FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04

@@ -8,7 +8,7 @@ the container starts converting immediately instead of resolving dependencies.
 
 import modal
 
-IMAGE = "ghcr.io/ghananlp/ghana-vc:latest"
+IMAGE = "ghcr.io/ghanaopenai/ghana-vc:latest"
 
 app = modal.App("ghana-vc")
 image = modal.Image.from_registry(IMAGE, add_python=None)

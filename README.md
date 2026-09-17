@@ -75,7 +75,7 @@ Pick the cheapest GPU available.
 A prebuilt image is published so you don't resolve dependencies on a GPU:
 
 ```
-ghcr.io/ghananlp/ghana-vc:latest
+ghcr.io/ghanaopenai/ghana-vc:latest
 ```
 
 Seed-VC, the torch stack and the checkpoint are all baked in, so a container
@@ -86,7 +86,7 @@ billed GPU minutes on most services.
 
 ```bash
 hf jobs run --flavor l4x1 --timeout 2h -s HF_TOKEN \
-  ghcr.io/ghananlp/ghana-vc:latest \
+  ghcr.io/ghanaopenai/ghana-vc:latest \
   ghana-vc convert --dataset <org>/<ds> --output <org>/<out> --num-samples 100
 ```
 
@@ -107,7 +107,7 @@ named `huggingface` providing `HF_TOKEN`.
 ```bash
 docker run --gpus all -e HF_TOKEN=$HF_TOKEN \
   -v "$PWD/audio:/work/audio" -v "$PWD/out:/work/out" \
-  ghcr.io/ghananlp/ghana-vc:latest \
+  ghcr.io/ghanaopenai/ghana-vc:latest \
   ghana-vc convert-local audio/ -o out/
 ```
 
