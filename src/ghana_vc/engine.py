@@ -60,7 +60,24 @@ def ensure_seedvc(install_deps: bool = True) -> Path:
                  str(dest / "requirements.txt")],
                 check=True,
             )
+            _repair_hub_stack()
     return dest
+
+
+# Seed-VC's requirements.txt pins an older huggingface_hub, which leaves
+# `datasets` importing symbols that version doesn't have -- in practice
+# "cannot import name 'XetDownloadProgressReporter'". Seed-VC itself only
+# needs hf_hub_download, so restoring a current Hub stack afterwards is safe
+# and keeps the dataset path working.
+HUB_STACK = ["huggingface_hub>=0.34", "datasets>=2.18"]
+
+
+def _repair_hub_stack() -> None:
+    log.info("Restoring huggingface_hub / datasets after Seed-VC pins")
+    subprocess.run(
+        [sys.executable, "-m", "pip", "install", "-q", "--upgrade", *HUB_STACK],
+        check=False,
+    )
 
 
 class ZephyrConverter:
