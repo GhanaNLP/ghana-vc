@@ -70,6 +70,50 @@ There is no benefit to a large GPU here: inference is one clip at a time and is
 not batched, so an A100 or H200 will not be meaningfully faster than a T4.
 Pick the cheapest GPU available.
 
+## Run it on a GPU service
+
+A prebuilt image is published so you don't resolve dependencies on a GPU:
+
+```
+ghcr.io/ghananlp/ghana-vc:latest
+```
+
+Seed-VC, the torch stack and the checkpoint are all baked in, so a container
+starts converting in seconds instead of spending ~5 minutes on `pip install` —
+billed GPU minutes on most services.
+
+### Hugging Face Jobs
+
+```bash
+hf jobs run --flavor l4x1 --timeout 2h -s HF_TOKEN \
+  ghcr.io/ghananlp/ghana-vc:latest \
+  ghana-vc convert --dataset <org>/<ds> --output <org>/<out> --num-samples 100
+```
+
+Mount a local folder with `-v ./audio:/work/audio` and use `convert-local`
+instead, to convert files from disk.
+
+### Modal
+
+```bash
+modal run examples/modal_app.py --dataset <org>/<ds> --output <org>/<out>
+```
+
+See [`examples/modal_app.py`](examples/modal_app.py). It expects a Modal secret
+named `huggingface` providing `HF_TOKEN`.
+
+### Docker, anywhere
+
+```bash
+docker run --gpus all -e HF_TOKEN=$HF_TOKEN \
+  -v "$PWD/audio:/work/audio" -v "$PWD/out:/work/out" \
+  ghcr.io/ghananlp/ghana-vc:latest \
+  ghana-vc convert-local audio/ -o out/
+```
+
+When using the image, pass `install_deps=False` from Python (the CLI detects
+the preinstalled Seed-VC automatically via `GHANA_VC_HOME`).
+
 ## Use
 
 ### A Hugging Face dataset
