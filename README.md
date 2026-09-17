@@ -11,8 +11,10 @@ checkpoint.
 ## Install
 
 ```bash
-pip install twi-zephyr-vc
+pip install git+https://github.com/GhanaNLP/twi-zephyr-vc
 ```
+
+Not yet on PyPI — install from source as above.
 
 Seed-VC itself is not on PyPI, so it is cloned into `~/.cache/twi-zephyr-vc/`
 on first use and its requirements installed. Set `TWI_ZEPHYR_VC_HOME` to change
