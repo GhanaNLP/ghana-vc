@@ -66,9 +66,9 @@ is far too slow there for anything beyond a handful of clips.
 
 | | |
 | --- | --- |
-| Minimum useful GPU | NVIDIA T4 (16 GB) — the cheapest cloud tier, sufficient |
-| VRAM needed | ~4-6 GB (412 MB checkpoint + Whisper-small + BigVGAN) |
-| Faster options | L4, A10G, L40S — all comfortably exceed requirements |
+| Recommended | NVIDIA L4 — fastest per dollar for this workload |
+| Also works | T4 (16 GB), 2.5x slower and slightly more per hour of audio |
+| VRAM needed | ~6 GB (412 MB checkpoint + Whisper-small + BigVGAN) |
 | CPU | Works, but expect many times slower; fine for one-off files |
 
 There is no benefit to a large GPU here: inference is one clip at a time and is
@@ -77,14 +77,25 @@ Pick the cheapest GPU available.
 
 ### Throughput
 
-Measured on an L4 at the default 50 diffusion steps:
+Measured at the default 50 diffusion steps, converting the same 0.2 h of real
+dataset audio on each GPU:
 
-| Clips | RTF | Audio per GPU-hour | Cost per hour of audio* |
+| GPU | Audio per GPU-hour | $/hour of GPU | **$/hour of audio** |
 | --- | --- | --- | --- |
-| short (~6 s, typical dataset) | 0.37 | **2.7 h** | ~$0.30 |
-| longer (~14 s) | 0.25 | 4.0 h | ~$0.20 |
+| **L4** | **3.0 h** | $0.80 | **$0.27** |
+| T4 | 1.2 h | $0.40 | $0.33 |
 
-\* at $0.80/hour for an `l4x1`-class GPU.
+A T4 works and needs only ~6 GB, but it is **2.5x slower** than an L4 while
+costing half as much per hour — so the L4 is both quicker and slightly cheaper
+per hour of audio converted. Anything larger than an L4 is wasted money:
+inference is unbatched and will not use it.
+
+By clip length, on an L4:
+
+| Clips | RTF | Audio per GPU-hour |
+| --- | --- | --- |
+| short (~6 s, typical dataset) | 0.37 | 2.7 h |
+| longer (~14 s) | 0.25 | 4.0 h |
 
 Diffusion steps scale the cost almost linearly: 25 steps gives ~6.3 h per
 GPU-hour, 100 steps ~2.2 h.
