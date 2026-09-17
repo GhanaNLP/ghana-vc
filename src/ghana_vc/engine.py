@@ -74,8 +74,12 @@ HUB_STACK = ["huggingface_hub>=0.34", "datasets>=2.18"]
 
 def _repair_hub_stack() -> None:
     log.info("Restoring huggingface_hub / datasets after Seed-VC pins")
+    # --upgrade-strategy only-if-needed is load-bearing: without it pip drags
+    # numpy to 2.x, which breaks Seed-VC's numpy 1.x stack with
+    # "ModuleNotFoundError: No module named 'numpy.strings'".
     subprocess.run(
-        [sys.executable, "-m", "pip", "install", "-q", "--upgrade", *HUB_STACK],
+        [sys.executable, "-m", "pip", "install", "-q", "--upgrade",
+         "--upgrade-strategy", "only-if-needed", *HUB_STACK],
         check=False,
     )
 
