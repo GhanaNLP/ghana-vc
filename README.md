@@ -75,6 +75,29 @@ There is no benefit to a large GPU here: inference is one clip at a time and is
 not batched, so an A100 or H200 will not be meaningfully faster than a T4.
 Pick the cheapest GPU available.
 
+### Throughput
+
+Measured on an L4 at the default 50 diffusion steps:
+
+| Clips | RTF | Audio per GPU-hour | Cost per hour of audio* |
+| --- | --- | --- | --- |
+| short (~6 s, typical dataset) | 0.37 | **2.7 h** | ~$0.30 |
+| longer (~14 s) | 0.25 | 4.0 h | ~$0.20 |
+
+\* at $0.80/hour for an `l4x1`-class GPU.
+
+Diffusion steps scale the cost almost linearly: 25 steps gives ~6.3 h per
+GPU-hour, 100 steps ~2.2 h.
+
+Short clips are slower per second of audio because roughly **1 second per clip**
+is fixed cost — the vocoder plus I/O — regardless of clip length. A 6-second
+clip pays that on ~17% of its runtime, a 14-second clip on ~7%.
+
+Where the time goes at 50 steps: ~71% in the diffusion sampler, ~19% in the
+BigVGAN vocoder, ~2% in the content and speaker encoders.
+
+As a rule of thumb, **5 hours of audio takes about 2 GPU-hours** (~$1.50).
+
 ## Run it on a GPU service
 
 A prebuilt image is published so you don't resolve dependencies on a GPU:
