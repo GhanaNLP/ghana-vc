@@ -30,9 +30,12 @@ classifiers = [
 # install numpy 2.x first (along with datasets/pyarrow wheels built against
 # it), Seed-VC then downgrades numpy to 1.26.4, and those wheels fail with
 # "ModuleNotFoundError: No module named 'numpy.strings'".
+# datasets is held on the 2.x line on purpose. 3.x/4.x reach for newer
+# huggingface_hub symbols (XetDownloadProgressReporter), and upgrading the Hub
+# to satisfy them breaks Seed-VC's BigVGAN, which calls the older Hub API.
 dependencies = [
-    "datasets>=2.18",
-    "huggingface_hub>=0.28.1",
+    "datasets>=2.18,<3",
+    "huggingface_hub>=0.28.1,<0.34",
     "soundfile>=0.12",
     "numpy>=1.26,<2",
     "pyyaml",

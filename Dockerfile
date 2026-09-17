@@ -40,12 +40,12 @@ RUN git clone https://github.com/Plachtaa/seed-vc.git ${GHANA_VC_HOME}/seed-vc \
 ARG GHANA_VC_REF=main
 RUN python -m pip install "git+https://github.com/GhanaNLP/ghana-vc@${GHANA_VC_REF}"
 
-# 3. Seed-VC pins an older huggingface_hub that breaks datasets. Repair it here
-#    rather than at runtime.
-#    --upgrade-strategy only-if-needed keeps pip from dragging numpy to 2.x,
-#    which breaks Seed-VC's numpy 1.x stack with "No module named numpy.strings".
-RUN python -m pip install --upgrade --upgrade-strategy only-if-needed \
-        "huggingface_hub>=0.34" "datasets>=2.18"
+# 3. Do NOT upgrade huggingface_hub: Seed-VC's BigVGAN calls the older Hub API
+#    and fails with "BigVGAN._from_pretrained() missing 2 required keyword-only
+#    arguments" if it moves. datasets is held on 2.x instead, and only-if-needed
+#    stops pip dragging numpy past Seed-VC's numpy==1.26.4.
+RUN python -m pip install --upgrade-strategy only-if-needed \
+        "datasets>=2.18,<3" "huggingface_hub>=0.28.1,<0.34"
 
 # 4. Bake the weights in so the first conversion does not wait on a 412 MB
 #    download. Public repos, so no token is needed at build time.

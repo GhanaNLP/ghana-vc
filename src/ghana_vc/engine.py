@@ -60,28 +60,14 @@ def ensure_seedvc(install_deps: bool = True) -> Path:
                  str(dest / "requirements.txt")],
                 check=True,
             )
-            _repair_hub_stack()
     return dest
 
 
-# Installing Seed-VC's requirements can leave `datasets` importing Hub symbols
-# that the resolved huggingface_hub doesn't have -- in practice
-# "cannot import name 'XetDownloadProgressReporter'". Seed-VC asks only for
-# huggingface-hub>=0.28.1, so nudging the Hub stack forward afterwards is
-# compatible with it and keeps the dataset path working.
-HUB_STACK = ["huggingface_hub>=0.34", "datasets>=2.18"]
-
-
-def _repair_hub_stack() -> None:
-    log.info("Restoring huggingface_hub / datasets after Seed-VC pins")
-    # --upgrade-strategy only-if-needed is load-bearing: without it pip drags
-    # numpy to 2.x, which breaks Seed-VC's numpy 1.x stack with
-    # "ModuleNotFoundError: No module named 'numpy.strings'".
-    subprocess.run(
-        [sys.executable, "-m", "pip", "install", "-q", "--upgrade",
-         "--upgrade-strategy", "only-if-needed", *HUB_STACK],
-        check=False,
-    )
+# Seed-VC's BigVGAN calls the older huggingface_hub API, so the Hub must NOT be
+# upgraded past what it expects -- doing so fails with
+# "BigVGAN._from_pretrained() missing 2 required keyword-only arguments".
+# The datasets/Hub mismatch is therefore solved by constraining datasets (see
+# pyproject) rather than by bumping huggingface_hub here.
 
 
 class ZephyrConverter:
