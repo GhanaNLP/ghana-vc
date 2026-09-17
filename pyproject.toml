@@ -3,7 +3,7 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "twi-zephyr-vc"
+name = "ghana-vc"
 version = "0.1.0"
 description = "Convert any Hugging Face audio dataset into the Twi Zephyr voice"
 readme = "README.md"
@@ -20,14 +20,16 @@ classifiers = [
     "Intended Audience :: Science/Research",
 ]
 
+# torch / torchaudio / librosa are deliberately NOT pinned here. Seed-VC ships
+# its own requirements.txt and installs them on first use; declaring our own
+# versions installs a second, different torch build and the mismatched CUDA
+# runtime then breaks torchaudio with "libcudart.so.12: cannot open shared
+# object file". Let Seed-VC own the torch stack.
 dependencies = [
     "datasets>=2.18",
     "huggingface_hub>=0.23",
     "soundfile>=0.12",
     "numpy",
-    "librosa>=0.10",
-    "torch>=2.0",
-    "torchaudio>=2.0",
     "pyyaml",
 ]
 
@@ -35,12 +37,12 @@ dependencies = [
 dev = ["pytest>=7", "ruff>=0.4"]
 
 [project.scripts]
-twi-zephyr-vc = "twi_zephyr_vc.cli:main"
+ghana-vc = "ghana_vc.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/GhanaNLP/twi-zephyr-vc"
-Model = "https://huggingface.co/ghanaopenai/twi-zephyr-vc"
-Issues = "https://github.com/GhanaNLP/twi-zephyr-vc/issues"
+Homepage = "https://github.com/GhanaNLP/ghana-vc"
+Model = "https://huggingface.co/ghanaopenai/ghana-vc"
+Issues = "https://github.com/GhanaNLP/ghana-vc/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"]

@@ -1,11 +1,11 @@
-"""Defaults for twi-zephyr-vc."""
+"""Defaults for ghana-vc."""
 
 from __future__ import annotations
 
 SEEDVC_REPO = "https://github.com/Plachtaa/seed-vc.git"
 SEEDVC_COMMIT = ""  # pin a commit here if upstream drift becomes a problem
 
-DEFAULT_MODEL_REPO = "ghanaopenai/twi-zephyr-vc"
+DEFAULT_MODEL_REPO = "ghanaopenai/ghana-vc"
 
 # 50 is the recommended setting. Listening tests on this checkpoint found 25
 # (the Seed-VC default) audibly robotic, and 100 only marginally better than 50

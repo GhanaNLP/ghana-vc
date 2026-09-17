@@ -1,6 +1,6 @@
 """Convert local audio files or folders into the Zephyr voice.
 
-The Hub path in :mod:`twi_zephyr_vc.dataset` is the convenient one when the
+The Hub path in :mod:`ghana_vc.dataset` is the convenient one when the
 audio already lives on Hugging Face. This module covers the other common case:
 a folder of wavs on disk, with the option to publish the result afterwards.
 """

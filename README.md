@@ -1,25 +1,58 @@
-# twi-zephyr-vc
+# ghana-vc
 
-Convert **any** Hugging Face audio dataset into the Twi *Zephyr* voice, and push
-the result back to the Hub with the converted audio as an added column.
+Voice conversion for Ghanaian languages. Convert **any** speech — a local file,
+a folder, or a whole Hugging Face dataset — into a single consistent Ghanaian
+voice, and push the result back to the Hub.
 
-The conversion is **cross-lingual** — the source speech does not have to be Twi.
-It runs on [Seed-VC](https://github.com/Plachtaa/seed-vc) with the
-[`ghanaopenai/twi-zephyr-vc`](https://huggingface.co/ghanaopenai/twi-zephyr-vc)
+Built on [Seed-VC](https://github.com/Plachtaa/seed-vc) with the
+[`ghanaopenai/ghana-vc`](https://huggingface.co/ghanaopenai/ghana-vc)
 checkpoint.
+
+## About the voice, and how far it travels
+
+The checkpoint was **fine-tuned on a Twi (Akan) voice** — the target speaker,
+*Zephyr*, is a Twi speaker, and Twi is what the model saw during training.
+
+In practice it **transfers well to other languages**. Voice conversion operates
+on speaker timbre rather than on words, so the model is not bound to the
+language it was trained on. We have converted speech across 40+ Ghanaian and
+West African languages — Ewe, Dagbani, Ga, Dangme, Gonja, Kusaal, Hausa and
+many more — and the target voice comes through clearly.
+
+**Hear it for yourself:** [ghana-vc demo](https://huggingface.co/spaces/ghanaopenai/ghana-vc-demo)
+— three samples from each of 40+ languages, original beside converted.
+
+Two honest caveats:
+
+- Quality is **best on Twi** and merges gradually as a language's phonology
+  moves further from Akan. Languages with sounds absent from the training data
+  can show occasional artifacts.
+- The checkpoint is **not the ceiling**. It was fine-tuned for 2,500 steps on
+  Twi alone. Fine-tuning further — on more Twi, or on a target voice in the
+  language you care about — should improve things, and the same
+  [Seed-VC](https://github.com/Plachtaa/seed-vc) recipe applies.
+
+If you fine-tune a better checkpoint, point the library at it with
+`--model-repo <org>/<name>`; nothing else has to change.
 
 ## Install
 
 ```bash
-pip install git+https://github.com/GhanaNLP/twi-zephyr-vc
+pip install git+https://github.com/GhanaNLP/ghana-vc
 ```
 
 Not yet on PyPI — install from source as above.
 
-Seed-VC itself is not on PyPI, so it is cloned into `~/.cache/twi-zephyr-vc/`
-on first use and its requirements installed. Set `TWI_ZEPHYR_VC_HOME` to change
+Seed-VC itself is not on PyPI, so it is cloned into `~/.cache/ghana-vc/`
+on first use and its requirements installed. Set `GHANA_VC_HOME` to change
 that location, or pass `--no-install-deps` if you manage the environment
 yourself.
+
+`torch`, `torchaudio` and `librosa` are intentionally **not** pinned by this
+package — Seed-VC's own `requirements.txt` owns them. Installing a second torch
+build alongside Seed-VC's leads to a CUDA runtime mismatch
+(`libcudart.so.12: cannot open shared object file`). Install into a clean
+environment and let Seed-VC pull the torch stack it expects.
 
 ## Hardware
 
@@ -46,7 +79,7 @@ Point it at a dataset, give it somewhere to push:
 ```bash
 export HF_TOKEN=hf_...
 
-twi-zephyr-vc convert \
+ghana-vc convert \
   --dataset mozilla-foundation/common_voice_17_0 \
   --output my-org/common-voice-zephyr \
   --num-samples 100
@@ -93,7 +126,7 @@ checkpoint, 25 — the Seed-VC default — was noticeably robotic, and 50 fixed 
 | 100 | Marginally smoother, ~2x slower than 50 |
 
 ```bash
-twi-zephyr-vc convert --dataset org/ds --output org/ds-zephyr --diffusion-steps 100
+ghana-vc convert --dataset org/ds --output org/ds-zephyr --diffusion-steps 100
 ```
 
 ### Local files and folders
@@ -102,13 +135,13 @@ No Hub dataset needed — point it at files or directories on disk:
 
 ```bash
 # a folder (recurses by default), writing converted audio to out/
-twi-zephyr-vc convert-local recordings/ -o out/
+ghana-vc convert-local recordings/ -o out/
 
 # several inputs at once, mixing files and folders
-twi-zephyr-vc convert-local clip.wav interviews/ more/*.mp3 -o out/
+ghana-vc convert-local clip.wav interviews/ more/*.mp3 -o out/
 
 # convert locally, then publish the result to the Hub as well
-twi-zephyr-vc convert-local recordings/ -o out/ --push-to my-org/my-zephyr-audio
+ghana-vc convert-local recordings/ -o out/ --push-to my-org/my-zephyr-audio
 ```
 
 Reads `.wav`, `.mp3`, `.flac`, `.ogg`, `.opus`, `.m4a`, `.aac`, `.wma` and
@@ -129,13 +162,13 @@ inputs               files and/or directories             [required]
 ### A single file
 
 ```bash
-twi-zephyr-vc convert-file input.wav -o output.wav --diffusion-steps 50
+ghana-vc convert-file input.wav -o output.wav --diffusion-steps 50
 ```
 
 ### From Python
 
 ```python
-from twi_zephyr_vc import ZephyrConverter, convert_dataset, convert_paths
+from ghana_vc import ZephyrConverter, convert_dataset, convert_paths
 
 # one clip
 conv = ZephyrConverter(diffusion_steps=50)
@@ -174,7 +207,7 @@ is GPL-3.0, so a compatible copyleft licence is the honest choice here.
 The **model** is a separate matter and carries its own restrictions — most
 importantly its training data is CC-BY-NC-4.0, making model use
 **non-commercial**. Read the
-[model card](https://huggingface.co/ghanaopenai/twi-zephyr-vc) before using this
+[model card](https://huggingface.co/ghanaopenai/ghana-vc) before using this
 for anything beyond research.
 
 ## Credits

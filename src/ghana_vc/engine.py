@@ -36,10 +36,10 @@ log = logging.getLogger(__name__)
 
 
 def _cache_root() -> Path:
-    root = os.environ.get("TWI_ZEPHYR_VC_HOME")
+    root = os.environ.get("GHANA_VC_HOME")
     if root:
         return Path(root)
-    return Path.home() / ".cache" / "twi-zephyr-vc"
+    return Path.home() / ".cache" / "ghana-vc"
 
 
 def ensure_seedvc(install_deps: bool = True) -> Path:
@@ -167,7 +167,7 @@ class ZephyrConverter:
 
         cwd = os.getcwd()
         os.chdir(self._seed_dir)
-        tmp = tempfile.mkdtemp(prefix="twi-zephyr-")
+        tmp = tempfile.mkdtemp(prefix="ghana-vc-")
         try:
             args = self._make_args(
                 source=str(path),
@@ -194,7 +194,7 @@ class ZephyrConverter:
         if audio.ndim > 1:  # downmix to mono
             audio = audio.mean(axis=1)
 
-        tmp = tempfile.mkdtemp(prefix="twi-zephyr-src-")
+        tmp = tempfile.mkdtemp(prefix="ghana-vc-src-")
         try:
             src = Path(tmp) / "source.wav"
             sf.write(src, audio, sampling_rate)
