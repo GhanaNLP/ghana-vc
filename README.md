@@ -19,18 +19,13 @@ language it was trained on. We have converted speech across 40+ Ghanaian and
 West African languages — Ewe, Dagbani, Ga, Dangme, Gonja, Kusaal, Hausa and
 many more — and the target voice comes through clearly.
 
-**Hear it for yourself:** [ghana-vc demo](https://huggingface.co/spaces/ghanaopenai/ghana-vc-demo)
+**Hear it for yourself:** [ghana-vc demo](https://huggingface.co/spaces/ghananlpcommunity/ghana-vc-demo)
 — three samples from each of 40+ languages, original beside converted.
 
-Two honest caveats:
-
-- Quality is **best on Twi** and merges gradually as a language's phonology
-  moves further from Akan. Languages with sounds absent from the training data
-  can show occasional artifacts.
-- The checkpoint is **not the ceiling**. It was fine-tuned for 2,500 steps on
-  Twi alone. Fine-tuning further — on more Twi, or on a target voice in the
-  language you care about — should improve things, and the same
-  [Seed-VC](https://github.com/Plachtaa/seed-vc) recipe applies.
+The checkpoint is also **not a ceiling** — it was fine-tuned for 2,500 steps,
+and training further, or on a target voice in a language you care about,
+should improve it. The same [Seed-VC](https://github.com/Plachtaa/seed-vc)
+recipe applies.
 
 If you fine-tune a better checkpoint, point the library at it with
 `--model-repo <org>/<name>`; nothing else has to change.
