@@ -1,0 +1,50 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "twi-zephyr-vc"
+version = "0.1.0"
+description = "Convert any Hugging Face audio dataset into the Twi Zephyr voice"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "GPL-3.0-or-later" }
+authors = [{ name = "Ghana NLP" }]
+keywords = ["voice-conversion", "twi", "akan", "ghana", "speech", "seed-vc"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+    "Intended Audience :: Science/Research",
+]
+
+dependencies = [
+    "datasets>=2.18",
+    "huggingface_hub>=0.23",
+    "soundfile>=0.12",
+    "numpy",
+    "librosa>=0.10",
+    "torch>=2.0",
+    "torchaudio>=2.0",
+    "pyyaml",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7", "ruff>=0.4"]
+
+[project.scripts]
+twi-zephyr-vc = "twi_zephyr_vc.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/GhanaNLP/twi-zephyr-vc"
+Model = "https://huggingface.co/ghanaopenai/twi-zephyr-vc"
+Issues = "https://github.com/GhanaNLP/twi-zephyr-vc/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
