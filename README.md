@@ -8,24 +8,24 @@ Built on [Seed-VC](https://github.com/Plachtaa/seed-vc) with the
 [`ghanaopenai/ghana-vc`](https://huggingface.co/ghanaopenai/ghana-vc)
 checkpoint.
 
-## About the voice, and how far it travels
+## The voice
 
-The checkpoint was **fine-tuned on a Twi (Akan) voice** — the target speaker,
-*Zephyr*, is a Twi speaker, and Twi is what the model saw during training.
+One consistent Ghanaian voice, applied to speech in **any** language. Voice
+conversion operates on speaker timbre rather than on words, so the source
+audio does not have to be in a particular language.
 
-In practice it **transfers well to other languages**. Voice conversion operates
-on speaker timbre rather than on words, so the model is not bound to the
-language it was trained on. We have converted speech across 40+ Ghanaian and
-West African languages — Ewe, Dagbani, Ga, Dangme, Gonja, Kusaal, Hausa and
-many more — and the target voice comes through clearly.
+We have converted speech across **42 Ghanaian and West African languages** —
+Ewe, Dagbani, Dangme, Gonja, Kusaal, Nzema, Fante, Hausa and many more — with
+the voice coming through consistently throughout.
 
 **Hear it for yourself:** [ghana-vc demo](https://huggingface.co/spaces/ghananlpcommunity/ghana-vc-demo)
-— three samples from each of 40+ languages, original beside converted.
+— three samples from each of the 42 languages, original beside converted.
 
-The checkpoint is also **not a ceiling** — it was fine-tuned for 2,500 steps,
-and training further, or on a target voice in a language you care about,
-should improve it. The same [Seed-VC](https://github.com/Plachtaa/seed-vc)
-recipe applies.
+The checkpoint is **not a ceiling** — training further, or on a target voice in
+a language you care about, should improve it. The same
+[Seed-VC](https://github.com/Plachtaa/seed-vc) recipe applies, and the
+[model card](https://huggingface.co/ghanaopenai/ghana-vc) documents how this
+one was trained.
 
 If you fine-tune a better checkpoint, point the library at it with
 `--model-repo <org>/<name>`; nothing else has to change.
