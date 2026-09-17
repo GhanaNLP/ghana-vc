@@ -55,6 +55,26 @@ def build_parser() -> argparse.ArgumentParser:
                       help="skip installing Seed-VC requirements")
     conv.add_argument("-v", "--verbose", action="store_true")
 
+    loc = sub.add_parser("convert-local",
+                         help="convert local audio files or folders")
+    loc.add_argument("inputs", nargs="+",
+                     help="audio files and/or directories to convert")
+    loc.add_argument("-o", "--output-dir", required=True,
+                     help="where to write converted audio")
+    loc.add_argument("--no-recursive", action="store_true",
+                     help="do not descend into subdirectories")
+    loc.add_argument("--overwrite", action="store_true",
+                     help="reconvert files that already exist in the output")
+    loc.add_argument("--push-to", default=None,
+                     help="also publish the results to the Hub, e.g. org/name")
+    loc.add_argument("--private", action="store_true")
+    loc.add_argument("--diffusion-steps", type=_steps, default=DEFAULT_DIFFUSION_STEPS,
+                     help="25 (fast, robotic), 50 (recommended), 100 (slowest)")
+    loc.add_argument("--model-repo", default=DEFAULT_MODEL_REPO)
+    loc.add_argument("--token", default=None)
+    loc.add_argument("--no-install-deps", action="store_true")
+    loc.add_argument("-v", "--verbose", action="store_true")
+
     one = sub.add_parser("convert-file", help="convert a single audio file")
     one.add_argument("source", help="input audio file")
     one.add_argument("-o", "--output", default="converted.wav")
@@ -92,6 +112,24 @@ def main(argv: list[str] | None = None) -> int:
             keep_original=not args.drop_original,
             install_deps=not args.no_install_deps,
         )
+        return 0
+
+    if args.command == "convert-local":
+        from .local import convert_paths
+
+        written = convert_paths(
+            args.inputs,
+            args.output_dir,
+            recursive=not args.no_recursive,
+            diffusion_steps=args.diffusion_steps,
+            model_repo=args.model_repo,
+            token=token,
+            install_deps=not args.no_install_deps,
+            overwrite=args.overwrite,
+            push_to=args.push_to,
+            private=args.private,
+        )
+        print(f"converted {len(written)} file(s) into {args.output_dir}")
         return 0
 
     if args.command == "convert-file":
