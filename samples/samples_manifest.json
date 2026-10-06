@@ -1,0 +1,83 @@
+[
+  {
+    "language": "Akuapem Twi",
+    "iso": "twi",
+    "sample_file": "sample_01.wav",
+    "original_text": "Adam asefo y\u025b Set, Enos.",
+    "universal_text": "adam asefo ye set, enos.",
+    "duration_sec": 3.0,
+    "voice": "Zephyr"
+  },
+  {
+    "language": "Ewe",
+    "iso": "ewe",
+    "sample_file": "sample_ewe.wav",
+    "original_text": "Az\u0254 la, Filistit\u0254wo dze a\u028ba la w\u0254w\u0254 g\u0254me kple Israelviwo eye Israelviwo si le wo nu.",
+    "universal_text": "azo la, filistitowo dze ava la wowo gome kple israelviwo eye israelviwo shi le wo nu.",
+    "duration_sec": 7.51,
+    "voice": "Zephyr"
+  },
+  {
+    "language": "Dagbani",
+    "iso": "dag",
+    "sample_file": "sample_dagbani.wav",
+    "original_text": "Filistianim\u2019 mini Izra\u025blnim\u2019 daa ti tuhiri t\u0254bu, ka Izra\u025blnim\u2019 daa \u014bmaligi guui ka ch\u025b Filistianima.",
+    "universal_text": "filistianim mini izraelnim daa ti tuhiri tobu, ka izraelnim daa ngmaligi guui ka che filistianima.",
+    "duration_sec": 6.61,
+    "voice": "Zephyr"
+  },
+  {
+    "language": "Dangme",
+    "iso": "ada",
+    "sample_file": "sample_dangme.wav",
+    "original_text": "Ny\u025b le kaa ben\u025b ny\u025b ji w\u0254 jali \u0254, amagahi n\u025b wami be a mi \u0254 a se a gblaa ny\u025b ya ny\u025b\u025b\u0254.",
+    "universal_text": "nya le kaa bena nya ji wo jali o, amagahi na wami be a mi o a se a gblaa nya ya nyaao.",
+    "duration_sec": 6.91,
+    "voice": "Zephyr"
+  },
+  {
+    "language": "Fante",
+    "iso": "fat",
+    "sample_file": "sample_fante.wav",
+    "original_text": "Adam woo Set, Set woo Enos, na Enos woo Kenan; Kenan woo Mahalalel, Mahalalel woo Jared, na Jared woo Enok.",
+    "universal_text": "adam woo set, set woo enos, na enos woo kenan; kenan woo mahalalel, mahalalel woo jared, na jared woo enwk.",
+    "duration_sec": 12.25,
+    "voice": "Zephyr"
+  },
+  {
+    "language": "Kasem",
+    "iso": "xsm",
+    "sample_file": "sample_kasem.wav",
+    "original_text": "Isarele tiina nabaara nat\u0254ga kam nane k\u0254.",
+    "universal_text": "isarele tiina nabaara natoga kam nane ko.",
+    "duration_sec": 3.8,
+    "voice": "Zephyr"
+  },
+  {
+    "language": "Nzema",
+    "iso": "nzi",
+    "sample_file": "sample_nzema.wav",
+    "original_text": "Saa mekola menli nee anwuma soanvol\u025bma ane\u025b ngakyile ne m\u0254 ka, na menl\u025b \u025bhulol\u025b a.",
+    "universal_text": "saa mekola menli nee anwuma soanvolema anie ngakyile ne mo ka, na menle ehulole a.",
+    "duration_sec": 6.92,
+    "voice": "Zephyr"
+  },
+  {
+    "language": "Dagaare",
+    "iso": "dga",
+    "sample_file": "sample_dagaare.wav",
+    "original_text": "A P\u0254\u0254l Na\u014b Puori A Korinti Te\u014b\u025b Puoruu La\u014bne Biiri.",
+    "universal_text": "a pool nang puori a korinti tenge puoruu langne biiri.",
+    "duration_sec": 4.45,
+    "voice": "Zephyr"
+  },
+  {
+    "language": "Gonja",
+    "iso": "gjn",
+    "sample_file": "sample_gonja.wav",
+    "original_text": "Ewura S\u0254\u0254l be luwu be ashe\u014b nyo so.",
+    "universal_text": "ewura suol be luwu be asheng nyo so.",
+    "duration_sec": 3.56,
+    "voice": "Zephyr"
+  }
+]

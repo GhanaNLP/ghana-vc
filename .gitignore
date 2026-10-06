@@ -9,3 +9,8 @@ venv/
 .ruff_cache/
 *.wav
 !examples/*.wav
+.env
+.env.*
+out/
+work/
+
