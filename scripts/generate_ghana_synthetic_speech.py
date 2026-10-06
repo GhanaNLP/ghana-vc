@@ -576,10 +576,16 @@ def generate_dataset_card(
     base_dir: str,
     active_configs: Sequence[str],
     repo_id: str = DEFAULT_HF_REPO,
+    hub_configs: Optional[set] = None,
 ) -> str:
-    """Generate root README.md with YAML dataset configs for Hugging Face."""
+    """Generate root README.md with YAML dataset configs for Hugging Face.
+
+    A config is listed in the ``configs:`` YAML if it has parquet shards locally
+    (``base_dir``) OR already exists on the Hub (``hub_configs``).
+    """
     configs_yaml = []
     summary_rows = []
+    hub_configs = hub_configs or set()
 
     for cfg in sorted(active_configs):
         info = GHANA_SPEECH_CONFIGS[cfg]
@@ -591,13 +597,18 @@ def generate_dataset_card(
             with open(manifest, "r", encoding="utf-8") as f:
                 num_clips = sum(1 for _ in f)
 
-        if shards:
+        if shards or cfg in hub_configs:
             configs_yaml.append(f"""- config_name: {cfg}
   data_files:
   - split: train
     path: {cfg}/train-*""")
 
-        status_str = f"**{num_clips:,} clips**" if num_clips else "Pending"
+        if num_clips:
+            status_str = f"**{num_clips:,} clips**"
+        elif cfg in hub_configs:
+            status_str = "**On Hub**"
+        else:
+            status_str = "Pending"
         summary_rows.append(f"| {info['name']} | `{cfg}` | `{info['iso']}` | {status_str} |")
 
     yaml_block = "\n".join(configs_yaml)
@@ -709,7 +720,19 @@ def push_subset_to_hub(
     )
 
     # Update root dataset README
-    card_content = generate_dataset_card(base_dir, list(GHANA_SPEECH_CONFIGS.keys()), repo_id)
+    hub_configs = set()
+    try:
+        repo_files = api.list_repo_files(repo_id=repo_id, repo_type="dataset")
+        hubs_c = set()
+        for rf in repo_files:
+            if "/" in rf and rf.endswith(".parquet"):
+                hubs_c.add(rf.split("/")[0])
+        hub_configs = hubs_c
+    except Exception:
+        hub_configs = {config_name}
+    card_content = generate_dataset_card(
+        base_dir, list(GHANA_SPEECH_CONFIGS.keys()), repo_id, hub_configs=hub_configs
+    )
     readme_path = os.path.join(base_dir, "README.md")
     with open(readme_path, "w", encoding="utf-8") as f:
         f.write(card_content)
