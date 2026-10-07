@@ -11,7 +11,7 @@ import logging
 from pathlib import Path
 from typing import Iterable, Sequence
 
-from .config import DEFAULT_DIFFUSION_STEPS, DEFAULT_MODEL_REPO
+from .config import DEFAULT_CHECKPOINT_STEP, DEFAULT_DIFFUSION_STEPS
 from .engine import ZephyrConverter
 
 log = logging.getLogger(__name__)
@@ -45,7 +45,9 @@ def convert_paths(
     *,
     recursive: bool = True,
     diffusion_steps: int = DEFAULT_DIFFUSION_STEPS,
-    model_repo: str = DEFAULT_MODEL_REPO,
+    model_repo: str | None = None,
+    config_name: str | None = None,
+    checkpoint_step: int = DEFAULT_CHECKPOINT_STEP,
     token: str | None = None,
     install_deps: bool = True,
     overwrite: bool = False,
@@ -84,6 +86,8 @@ def convert_paths(
     converter = ZephyrConverter(
         diffusion_steps=diffusion_steps,
         model_repo=model_repo,
+        config_name=config_name,
+        checkpoint_step=checkpoint_step,
         token=token,
         install_deps=install_deps,
     )
@@ -114,12 +118,13 @@ def convert_paths(
                     len(failures), len(files), [f.name for f in failures[:20]])
 
     if push_to:
-        _push(written, files, push_to, diffusion_steps, model_repo, token, private)
+        _push(written, files, push_to, diffusion_steps, converter.model_repo, checkpoint_step,
+              token, private)
 
     return written
 
 
-def _push(written, sources, repo_id, diffusion_steps, model_repo, token, private):
+def _push(written, sources, repo_id, diffusion_steps, model_repo, checkpoint_step, token, private):
     """Publish converted local audio to the Hub as a dataset."""
     from datasets import Audio, Dataset
 
@@ -131,6 +136,7 @@ def _push(written, sources, repo_id, diffusion_steps, model_repo, token, private
             "source_file": [by_stem.get(p.stem, p).name for p in written],
             "zephyr_diffusion_steps": [diffusion_steps] * len(written),
             "zephyr_model": [model_repo] * len(written),
+            "zephyr_checkpoint_step": [checkpoint_step] * len(written),
         }
     ).cast_column("audio_zephyr", Audio())
     ds.push_to_hub(repo_id, token=token, private=private)

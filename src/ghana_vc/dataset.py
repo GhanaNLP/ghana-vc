@@ -3,12 +3,11 @@
 from __future__ import annotations
 
 import logging
-from typing import Iterable
 
 from .config import (
     COMMON_AUDIO_COLUMNS,
+    DEFAULT_CHECKPOINT_STEP,
     DEFAULT_DIFFUSION_STEPS,
-    DEFAULT_MODEL_REPO,
     OUTPUT_AUDIO_COLUMN,
 )
 from .engine import ZephyrConverter
@@ -43,7 +42,8 @@ def convert_dataset(
     audio_column: str | None = None,
     num_samples: int | None = None,
     diffusion_steps: int = DEFAULT_DIFFUSION_STEPS,
-    model_repo: str = DEFAULT_MODEL_REPO,
+    model_repo: str | None = None,
+    checkpoint_step: int = DEFAULT_CHECKPOINT_STEP,
     token: str | None = None,
     private: bool = False,
     keep_original: bool = True,
@@ -73,6 +73,8 @@ def convert_dataset(
     converter = ZephyrConverter(
         diffusion_steps=diffusion_steps,
         model_repo=model_repo,
+        config_name=config_name,
+        checkpoint_step=checkpoint_step,
         token=token,
         install_deps=install_deps,
     )
@@ -93,7 +95,8 @@ def convert_dataset(
                 "sampling_rate": item["sampling_rate"],
             }
         example["zephyr_diffusion_steps"] = diffusion_steps
-        example["zephyr_model"] = model_repo
+        example["zephyr_model"] = converter.model_repo
+        example["zephyr_checkpoint_step"] = checkpoint_step
         return example
 
     log.info("Converting %d samples at %d diffusion steps", len(ds), diffusion_steps)

@@ -2,8 +2,11 @@
 
 from .config import (
     ALLOWED_DIFFUSION_STEPS,
+    DEFAULT_CHECKPOINT_STEP,
     DEFAULT_DIFFUSION_STEPS,
     DEFAULT_MODEL_REPO,
+    MODEL_REPO_PREFIX,
+    model_repo_for,
 )
 from .dataset import convert_dataset, detect_audio_column
 from .engine import ZephyrConverter, ensure_seedvc
@@ -20,6 +23,9 @@ __all__ = [
     "collect_audio",
     "DEFAULT_DIFFUSION_STEPS",
     "ALLOWED_DIFFUSION_STEPS",
+    "DEFAULT_CHECKPOINT_STEP",
     "DEFAULT_MODEL_REPO",
+    "MODEL_REPO_PREFIX",
+    "model_repo_for",
     "__version__",
 ]

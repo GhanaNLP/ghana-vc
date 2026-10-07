@@ -6,13 +6,21 @@ voice, and push the result back to the Hub.
 
 Built on [Seed-VC](https://github.com/Plachtaa/seed-vc) with the
 [`ghanaopenai/ghana-vc`](https://huggingface.co/ghanaopenai/ghana-vc)
-checkpoint.
+checkpoint, plus a **per-language model for each of the 42 languages** in
+[`ghanaopenai/ghana-synthetic-speech`](https://huggingface.co/datasets/ghanaopenai/ghana-synthetic-speech)
+(gathered in the [ghana-vc-models collection](https://huggingface.co/collections/ghanaopenai/ghana-vc-models-6ac5951baf5235f46c4da467)).
 
 ## The voice
 
 One consistent Ghanaian voice, applied to speech in **any** language. Voice
 conversion operates on speaker timbre rather than on words, so the source
 audio does not have to be in a particular language.
+
+Every language with a dedicated checkpoint gets it automatically: pass
+`--config-name <language>` (e.g. `Ewe_ewe`, `Dagbani_dag`, `Kusaal_kus`) and the
+library uses `ghanaopenai/ghana-vc-<language>`; languages without a dedicated
+model fall back to the cross-lingual Twi checkpoint. Forcing a checkpoint with
+`--model-repo <org>/<name>` still works and bypasses the lookup.
 
 We have converted speech across **42 Ghanaian and West African languages** —
 Ewe, Dagbani, Dangme, Gonja, Kusaal, Nzema, Fante, Hausa and many more — with
@@ -169,13 +177,40 @@ ghana-vc convert \
 ```
 
 That converts the first 100 samples at the default 50 diffusion steps and pushes
-the result. Every original column is preserved; three are added:
+the result. Every original column is preserved; four are added:
 
 | Column | Contents |
 | --- | --- |
 | `audio_zephyr` | the converted audio |
 | `zephyr_diffusion_steps` | steps used, for provenance |
-| `zephyr_model` | checkpoint used, for provenance |
+| `zephyr_model` | model repo used, for provenance |
+| `zephyr_checkpoint_step` | checkpoint step used, for provenance |
+
+### Per-language models
+
+When the dataset is one of the 42 language configs in
+`ghanaopenai/ghana-synthetic-speech`, passing `--config-name <language>` selects
+the matching `ghanaopenai/ghana-vc-<language>` checkpoint automatically:
+
+```bash
+ghana-vc convert \
+  --dataset ghanaopenai/ghana-synthetic-speech \
+  --output my-org/ewe-zephyr \
+  --config-name Ewe_ewe \
+  --num-samples 100
+```
+
+`convert-local` and `convert-file` accept `--config-name` the same way. A
+language without a published per-language model falls back to the cross-lingual
+Twi checkpoint.
+
+Each per-language repo holds a checkpoint every 500 steps up to 3500. Step 2500
+is the default; pick another with `--checkpoint-step` (500, 1000, … 3000, or 3500
+for the final model):
+
+```bash
+ghana-vc convert-file speech.wav -o out.wav --config-name Ewe_ewe --checkpoint-step 3000
+```
 
 ### Options
 
@@ -183,10 +218,13 @@ the result. Every original column is preserved; three are added:
 --dataset            source dataset (org/name)            [required]
 --output             destination dataset (org/name)       [required]
 --split              default: train
---config-name        dataset config, when it has several
+--config-name        dataset config; also selects the per-language model
 --audio-column       auto-detected when omitted
 --num-samples        convert only the first N
 --diffusion-steps    25 | 50 | 100        (default: 50)
+--model-repo         model repo (default: per-language model for --config-name,
+                     else the cross-lingual Twi checkpoint)
+--checkpoint-step    per-language checkpoint step         (default: 2500)
 --token              HF token; falls back to $HF_TOKEN, then cached login
 --private            push as a private dataset
 --drop-original      remove the source audio column

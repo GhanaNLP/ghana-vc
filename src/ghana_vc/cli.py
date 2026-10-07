@@ -9,8 +9,8 @@ import sys
 
 from .config import (
     ALLOWED_DIFFUSION_STEPS,
+    DEFAULT_CHECKPOINT_STEP,
     DEFAULT_DIFFUSION_STEPS,
-    DEFAULT_MODEL_REPO,
 )
 
 
@@ -38,14 +38,19 @@ def build_parser() -> argparse.ArgumentParser:
     conv.add_argument("--dataset", required=True, help="source dataset, e.g. org/name")
     conv.add_argument("--output", required=True, help="destination dataset, e.g. org/name-zephyr")
     conv.add_argument("--split", default="train")
-    conv.add_argument("--config-name", default=None, help="dataset config name")
+    conv.add_argument("--config-name", default=None,
+                      help="dataset config name; also selects the per-language model")
     conv.add_argument("--audio-column", default=None,
                       help="audio column (auto-detected when omitted)")
     conv.add_argument("--num-samples", type=int, default=None,
                       help="convert only the first N samples")
     conv.add_argument("--diffusion-steps", type=_steps, default=DEFAULT_DIFFUSION_STEPS,
                       help="25 (fast, robotic), 50 (recommended), 100 (slowest)")
-    conv.add_argument("--model-repo", default=DEFAULT_MODEL_REPO)
+    conv.add_argument("--model-repo", default=None,
+                      help="model repo (default: per-language model for --config-name, "
+                           "else the cross-lingual Twi model)")
+    conv.add_argument("--checkpoint-step", type=int, default=DEFAULT_CHECKPOINT_STEP,
+                      help="checkpoint step to use (default: 2500)")
     conv.add_argument("--token", default=None,
                       help="HF token (falls back to $HF_TOKEN, then cached login)")
     conv.add_argument("--private", action="store_true", help="push as a private dataset")
@@ -70,7 +75,13 @@ def build_parser() -> argparse.ArgumentParser:
     loc.add_argument("--private", action="store_true")
     loc.add_argument("--diffusion-steps", type=_steps, default=DEFAULT_DIFFUSION_STEPS,
                      help="25 (fast, robotic), 50 (recommended), 100 (slowest)")
-    loc.add_argument("--model-repo", default=DEFAULT_MODEL_REPO)
+    loc.add_argument("--config-name", default=None,
+                     help="language config name; selects the per-language model")
+    loc.add_argument("--model-repo", default=None,
+                     help="model repo (default: per-language model for --config-name, "
+                          "else the cross-lingual Twi model)")
+    loc.add_argument("--checkpoint-step", type=int, default=DEFAULT_CHECKPOINT_STEP,
+                     help="checkpoint step to use (default: 2500)")
     loc.add_argument("--token", default=None)
     loc.add_argument("--no-install-deps", action="store_true")
     loc.add_argument("-v", "--verbose", action="store_true")
@@ -79,7 +90,13 @@ def build_parser() -> argparse.ArgumentParser:
     one.add_argument("source", help="input audio file")
     one.add_argument("-o", "--output", default="converted.wav")
     one.add_argument("--diffusion-steps", type=_steps, default=DEFAULT_DIFFUSION_STEPS)
-    one.add_argument("--model-repo", default=DEFAULT_MODEL_REPO)
+    one.add_argument("--config-name", default=None,
+                     help="language config name; selects the per-language model")
+    one.add_argument("--model-repo", default=None,
+                     help="model repo (default: per-language model for --config-name, "
+                          "else the cross-lingual Twi model)")
+    one.add_argument("--checkpoint-step", type=int, default=DEFAULT_CHECKPOINT_STEP,
+                     help="checkpoint step to use (default: 2500)")
     one.add_argument("--token", default=None)
     one.add_argument("--no-install-deps", action="store_true")
     one.add_argument("-v", "--verbose", action="store_true")
@@ -107,6 +124,7 @@ def main(argv: list[str] | None = None) -> int:
             num_samples=args.num_samples,
             diffusion_steps=args.diffusion_steps,
             model_repo=args.model_repo,
+            checkpoint_step=args.checkpoint_step,
             token=token,
             private=args.private,
             keep_original=not args.drop_original,
@@ -123,6 +141,8 @@ def main(argv: list[str] | None = None) -> int:
             recursive=not args.no_recursive,
             diffusion_steps=args.diffusion_steps,
             model_repo=args.model_repo,
+            config_name=args.config_name,
+            checkpoint_step=args.checkpoint_step,
             token=token,
             install_deps=not args.no_install_deps,
             overwrite=args.overwrite,
@@ -140,6 +160,8 @@ def main(argv: list[str] | None = None) -> int:
         conv = ZephyrConverter(
             diffusion_steps=args.diffusion_steps,
             model_repo=args.model_repo,
+            config_name=args.config_name,
+            checkpoint_step=args.checkpoint_step,
             token=token,
             install_deps=not args.no_install_deps,
         )
