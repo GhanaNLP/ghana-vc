@@ -14,7 +14,6 @@ from __future__ import annotations
 
 import logging
 import os
-import re
 import shutil
 import subprocess
 import sys
@@ -26,7 +25,6 @@ import numpy as np
 
 from .config import (
     DEFAULT_CFG_RATE,
-    DEFAULT_CHECKPOINT_STEP,
     DEFAULT_DIFFUSION_STEPS,
     DEFAULT_LENGTH_ADJUST,
     SEEDVC_COMMIT,
@@ -92,14 +90,12 @@ class ZephyrConverter:
         fp16: bool = True,
         token: str | None = None,
         config_name: str | None = None,
-        checkpoint_step: int = DEFAULT_CHECKPOINT_STEP,
         install_deps: bool = True,
     ) -> None:
         self.diffusion_steps = int(diffusion_steps)
         self.length_adjust = float(length_adjust)
         self.cfg_rate = float(cfg_rate)
         self.fp16 = bool(fp16)
-        self.checkpoint_step = int(checkpoint_step)
         # Auto-select the per-language model unless the caller overrode it.
         self.model_repo = model_repo or model_repo_for(config_name, token=token)
         self._token = token
@@ -111,7 +107,7 @@ class ZephyrConverter:
 
     # -- model loading -----------------------------------------------------
     def _download_assets(self) -> tuple[str, str, str]:
-        from huggingface_hub import hf_hub_download, list_repo_files
+        from huggingface_hub import hf_hub_download
 
         kw = {"token": self._token} if self._token else {}
         cfg = hf_hub_download(
@@ -120,35 +116,8 @@ class ZephyrConverter:
             **kw,
         )
         ref = hf_hub_download(self.model_repo, "ref_zephyr.wav", **kw)
-
-        ckpt_file = self._checkpoint_file(list_repo_files(self.model_repo, **kw))
-        log.info("Checkpoint: %s/%s", self.model_repo, ckpt_file)
-        ckpt = hf_hub_download(self.model_repo, ckpt_file, **kw)
+        ckpt = hf_hub_download(self.model_repo, "ft_model.pth", **kw)
         return ckpt, cfg, ref
-
-    def _checkpoint_file(self, files: list[str]) -> str:
-        """Pick the checkpoint for ``checkpoint_step`` from a repo's file list.
-
-        Per-language repos hold ``DiT_epoch_E_step_S.pth`` every 500 steps plus
-        ``ft_model.pth`` (the final step). The epoch number varies by language,
-        so match on the step alone. A step past the last saved one means the
-        final model; a missing step in between is an error, not a silent swap.
-        """
-        steps = {}
-        for f in files:
-            m = re.search(r"_step_(\d+)\.pth$", f)
-            if m:
-                steps[int(m.group(1))] = f
-        if not steps:  # cross-lingual repo: final model only
-            return "ft_model.pth"
-        if self.checkpoint_step in steps:
-            return steps[self.checkpoint_step]
-        if self.checkpoint_step > max(steps):
-            return "ft_model.pth"
-        raise ValueError(
-            f"{self.model_repo} has no step-{self.checkpoint_step} checkpoint; "
-            f"available steps: {sorted(steps)} (or any later step for the final model)"
-        )
 
     def load(self) -> None:
         """Download assets and load the model. Idempotent."""

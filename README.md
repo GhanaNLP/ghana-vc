@@ -177,14 +177,13 @@ ghana-vc convert \
 ```
 
 That converts the first 100 samples at the default 50 diffusion steps and pushes
-the result. Every original column is preserved; four are added:
+the result. Every original column is preserved; three are added:
 
 | Column | Contents |
 | --- | --- |
 | `audio_zephyr` | the converted audio |
 | `zephyr_diffusion_steps` | steps used, for provenance |
-| `zephyr_model` | model repo used, for provenance |
-| `zephyr_checkpoint_step` | checkpoint step used, for provenance |
+| `zephyr_model` | checkpoint used, for provenance |
 
 ### Per-language models
 
@@ -204,13 +203,10 @@ ghana-vc convert \
 language without a published per-language model falls back to the cross-lingual
 Twi checkpoint.
 
-Each per-language repo holds a checkpoint every 500 steps up to 3500. Step 2500
-is the default; pick another with `--checkpoint-step` (500, 1000, … 3000, or 3500
-for the final model):
-
-```bash
-ghana-vc convert-file speech.wav -o out.wav --config-name Ewe_ewe --checkpoint-step 3000
-```
+Each per-language model is the step-1,000 checkpoint of a 3,500-step fine-tune.
+Comparing checkpoints from 500 to 3,500 steps on Asante Twi, step 1,000 kept
+pronunciation clearest (lowest character error rate with Omnilingual ASR), so it
+is the one published.
 
 ### Options
 
@@ -224,7 +220,6 @@ ghana-vc convert-file speech.wav -o out.wav --config-name Ewe_ewe --checkpoint-s
 --diffusion-steps    25 | 50 | 100        (default: 50)
 --model-repo         model repo (default: per-language model for --config-name,
                      else the cross-lingual Twi checkpoint)
---checkpoint-step    per-language checkpoint step         (default: 2500)
 --token              HF token; falls back to $HF_TOKEN, then cached login
 --private            push as a private dataset
 --drop-original      remove the source audio column

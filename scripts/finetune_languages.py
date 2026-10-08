@@ -107,7 +107,8 @@ def parse_args(argv=None):
         help="python from the venv that has Seed-VC's torch/deps",
     )
     p.add_argument("--work-dir", required=True, help="scratch + staged models")
-    p.add_argument("--steps", type=int, default=3500)
+    # Step 1000 kept pronunciation clearest in a 500-3500 checkpoint comparison.
+    p.add_argument("--steps", type=int, default=1000)
     p.add_argument("--save-every", type=int, default=500)
     p.add_argument("--batch-size", type=int, default=2)
     p.add_argument("--num-workers", type=int, default=4)
@@ -216,12 +217,9 @@ def stage_and_push(config, args, ft_model: Path, model_cfg: Path):
         shutil.rmtree(stage)
     stage.mkdir(parents=True)
 
-    # model + config + language reference clip
+    # model + config + language reference clip (only the final weights; the
+    # intermediate DiT_epoch_* checkpoints carry optimizer state and stay local)
     shutil.copy2(ft_model, stage / "ft_model.pth")
-    # keep all intermediate checkpoints too
-    run_dir = Path(args.seedvc_dir) / "runs" / config
-    for ckpt in sorted(run_dir.glob("DiT_epoch_*.pth")):
-        shutil.copy2(ckpt, stage / ckpt.name)
     shutil.copy2(model_cfg, stage / FT_CONFIG)
 
     # reference: the first Zephyr clip of the language, pulled from the parquet
@@ -329,7 +327,7 @@ The library auto-selects this model when the dataset/config name matches.
 
 | File | Description |
 | --- | --- |
-| `ft_model.pth` | Fine-tuned checkpoint (DiT + BigVGAN) |
+| `ft_model.pth` | Fine-tuned DiT weights (step 1,000) |
 | `{FT_CONFIG}` | Model / training config |
 | `ref_zephyr.wav` | Reference utterance of the *Zephyr* voice in {meta['name']} |
 | `LICENSE` | Upstream Seed-VC GPL-3.0 text, retained for attribution |
@@ -338,6 +336,9 @@ The library auto-selects this model when the dataset/config name matches.
 
 - Dataset: `ghanaopenai/ghana-synthetic-speech` config `{config}` ({meta['name']})
 - Base: `seed-uvit-whisper-small-wavenet` (zero-shot)
+- Weights: the step-1,000 checkpoint. Comparing checkpoints from 500 to 3,500
+  steps on Asante Twi, step 1,000 kept pronunciation clearest (lowest character
+  error rate with Omnilingual ASR CTC-300M), so it is the one published.
 """
 
 

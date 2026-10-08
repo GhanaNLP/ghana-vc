@@ -2,7 +2,6 @@
 
 from .config import (
     ALLOWED_DIFFUSION_STEPS,
-    DEFAULT_CHECKPOINT_STEP,
     DEFAULT_DIFFUSION_STEPS,
     DEFAULT_MODEL_REPO,
     MODEL_REPO_PREFIX,
@@ -23,7 +22,6 @@ __all__ = [
     "collect_audio",
     "DEFAULT_DIFFUSION_STEPS",
     "ALLOWED_DIFFUSION_STEPS",
-    "DEFAULT_CHECKPOINT_STEP",
     "DEFAULT_MODEL_REPO",
     "MODEL_REPO_PREFIX",
     "model_repo_for",

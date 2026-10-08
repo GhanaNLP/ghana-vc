@@ -21,11 +21,9 @@ DEFAULT_MODEL_REPO = "ghanaopenai/ghana-vc"
 # Twi checkpoint) when the per-language model has not been published.
 MODEL_REPO_PREFIX = "ghanaopenai/ghana-vc-"
 
-# Default checkpoint step. Per-language models are trained for 3500 steps with
-# checkpoints saved every 500; step 2500 is the default and --checkpoint-step
-# picks another. Repos without step checkpoints (the cross-lingual model) always
-# use ft_model.pth.
-DEFAULT_CHECKPOINT_STEP = 2500
+# Each per-language repo publishes a single ft_model.pth: the step-1000
+# checkpoint, which kept pronunciation clearest (lowest CER) in a comparison of
+# checkpoints from 500 to 3500 steps.
 
 # 50 is the recommended setting. Listening tests on this checkpoint found 25
 # (the Seed-VC default) audibly robotic, and 100 only marginally better than 50

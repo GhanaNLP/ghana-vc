@@ -6,7 +6,6 @@ import logging
 
 from .config import (
     COMMON_AUDIO_COLUMNS,
-    DEFAULT_CHECKPOINT_STEP,
     DEFAULT_DIFFUSION_STEPS,
     OUTPUT_AUDIO_COLUMN,
 )
@@ -43,7 +42,6 @@ def convert_dataset(
     num_samples: int | None = None,
     diffusion_steps: int = DEFAULT_DIFFUSION_STEPS,
     model_repo: str | None = None,
-    checkpoint_step: int = DEFAULT_CHECKPOINT_STEP,
     token: str | None = None,
     private: bool = False,
     keep_original: bool = True,
@@ -74,7 +72,6 @@ def convert_dataset(
         diffusion_steps=diffusion_steps,
         model_repo=model_repo,
         config_name=config_name,
-        checkpoint_step=checkpoint_step,
         token=token,
         install_deps=install_deps,
     )
@@ -96,7 +93,6 @@ def convert_dataset(
             }
         example["zephyr_diffusion_steps"] = diffusion_steps
         example["zephyr_model"] = converter.model_repo
-        example["zephyr_checkpoint_step"] = checkpoint_step
         return example
 
     log.info("Converting %d samples at %d diffusion steps", len(ds), diffusion_steps)
